@@ -26,6 +26,7 @@ export class KeycloakAdminClient {
   public clientScopes: ClientScopes;
   public identityProviders: IdentityProviders;
   public components: Components;
+  public credentials: Credentials;
 
   // Members
   public baseUrl: string;
@@ -53,6 +54,8 @@ export class KeycloakAdminClient {
   }
 
   public async auth(credentials: Credentials) {
+    this.credentials = credentials;
+
     const {accessToken, refreshToken} = await getToken({
       baseUrl: this.baseUrl,
       realmName: this.realmName,

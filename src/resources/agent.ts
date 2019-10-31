@@ -155,6 +155,18 @@ export class Agent {
     payloadKey?: string;
     returnResourceIdInLocationHeader?: {field: string};
   }) {
+    const accessToken = this.client.getAccessToken();
+    const tokenRaw = new Buffer(accessToken.split('.')[1], 'base64');
+    const token = JSON.parse(tokenRaw.toString());
+    const date = new Date();
+    const now = Math.floor(date.getTime() / 1000);
+
+    if (token.exp - 10 <= now) {
+      this.client.realmName = 'master';
+      await this.client.auth(this.client.credentials);
+      this.client.realmName = 'lagoon';
+    }
+
     const newPath = urlJoin(this.basePath, path);
 
     // Parse template and replace with values from urlParams
