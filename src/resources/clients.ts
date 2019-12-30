@@ -1,12 +1,13 @@
 import Resource from './resource';
 import ClientRepresentation from '../defs/clientRepresentation';
-import {KeycloakAdminClient} from '../client';
+import {Agent} from './agent';
 import RoleRepresentation from '../defs/roleRepresentation';
 import UserRepresentation from '../defs/userRepresentation';
 import CredentialRepresentation from '../defs/credentialRepresentation';
 import ClientScopeRepresentation from '../defs/clientScopeRepresentation';
 import ProtocolMapperRepresentation from '../defs/protocolMapperRepresentation';
 import MappingsRepresentation from '../defs/mappingsRepresentation';
+import UserSessionRepresentation from '../defs/userSessionRepresentation';
 
 export interface ClientQuery {
   clientId?: string;
@@ -14,6 +15,8 @@ export interface ClientQuery {
 }
 
 export class Clients extends Resource<{realm?: string}> {
+  public basePath = '/admin/realms/{realm}/clients';
+
   public find = this.makeRequest<ClientQuery, ClientRepresentation[]>({
     method: 'GET',
   });
@@ -371,15 +374,41 @@ export class Clients extends Resource<{realm?: string}> {
     urlParamKeys: ['id'],
   });
 
-  constructor(client: KeycloakAdminClient) {
-    super(client, {
-      path: '/admin/realms/{realm}/clients',
-      getUrlParams: () => ({
-        realm: client.realmName,
-      }),
-      getBaseUrl: () => client.baseUrl,
-    });
-  }
+  /**
+   * Sessions
+   */
+  public listSessions = this.makeRequest<
+    {id: string; first?: number; max?: number},
+    UserSessionRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/user-sessions',
+    urlParamKeys: ['id'],
+  });
+
+  public listOfflineSessions = this.makeRequest<
+    {id: string; first?: number; max?: number},
+    UserSessionRepresentation[]
+  >({
+    method: 'GET',
+    path: '/{id}/offline-sessions',
+    urlParamKeys: ['id'],
+  });
+
+  public getSessionCount = this.makeRequest<{id: string}, {count: number}>({
+    method: 'GET',
+    path: '/{id}/session-count',
+    urlParamKeys: ['id'],
+  });
+
+  public getOfflineSessionCount = this.makeRequest<
+    {id: string},
+    {count: number}
+  >({
+    method: 'GET',
+    path: '/{id}/offline-session-count',
+    urlParamKeys: ['id'],
+  });
 
   /**
    * Find single protocol mapper by name.
