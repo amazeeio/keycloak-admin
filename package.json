@@ -4,19 +4,19 @@
   "description": "keycloak admin client",
   "main": "lib/index.js",
   "files": [
-    "lib"
+    "lib/"
   ],
   "scripts": {
     "clean": "rimraf lib",
     "lint": "tslint --force --format verbose \"src/**/*.ts\" \"test/*\"",
-    "build": "npm run clean && npm run lint && echo Using TypeScript && tsc --version && tsc -p ./tsconfig.release.json --pretty",
+    "build": "yarn clean && yarn lint && echo Using TypeScript && tsc --version && tsc -p ./tsconfig.release.json --pretty",
     "test": "DEBUG=kc-admin mocha --require ts-node/register --recursive \"test/**/*.spec.ts\"",
     "test:grep": "DEBUG=kc-admin mocha --require ts-node/register",
-    "coverage": "nyc npm run test",
-    "watch": "npm run build -- --watch",
-    "watch:test": "npm run test -- --watch",
-    "prepublishOnly": "npm run clean && npm run build",
-    "prepare": "npm run build"
+    "coverage": "nyc yarn test",
+    "watch": "yarn build -- --watch",
+    "watch:test": "yarn test -- --watch",
+    "prepublishOnly": "yarn clean && yarn build",
+    "prepare": "yarn build"
   },
   "dependencies": {
     "@types/debug": "^0.0.30",
